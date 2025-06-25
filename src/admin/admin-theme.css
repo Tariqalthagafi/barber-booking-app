@@ -1,0 +1,48 @@
+.pending-card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin: 12px 0;
+  border-radius: 8px;
+  background: #fefefe;
+}
+
+.image-compare {
+  display: flex;
+  gap: 10px;
+}
+
+.image-compare img.preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.text-compare {
+  margin: 8px 0;
+}
+
+.current, .proposed {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.actions button {
+  margin-inline-end: 10px;
+}
+.logout-button {
+  float: right;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: -40px;
+  margin-bottom: 10px;
+}
+.logout-button:hover {
+  background-color: #c82333;
+}

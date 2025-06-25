@@ -1,0 +1,91 @@
+/* src/components/BarberCard.css */
+.barber-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  width: 200px;
+}
+
+.barber-image {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.barber-name {
+  margin: 12px 0 4px;
+  font-weight: bold;
+}
+
+.barber-rating {
+  color: #ffaa00;
+}
+.barber-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 12px;
+  gap: 12px;
+}
+
+.barber-actions a,
+.barber-actions span {
+  width: 40px;
+  height: 40px;
+  background-color: #eee;
+  color: #333;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.barber-actions a:hover,
+.barber-actions span:hover {
+  background-color: #333;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.barber-image {
+  width: 100%;
+  max-width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.toggle-button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border: none;
+  background-color: #333;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle-button:hover {
+  background-color: #555;
+}
+
+.services-list {
+  list-style: none;
+  padding: 12px;
+  margin-top: 8px;
+  background-color: #fafafa;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.services-list li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e0e0e0;
+}
