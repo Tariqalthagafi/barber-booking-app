@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Tariqalthagafi/barber-booking-app/static/css/main.09bd7173.css",
-    "main.js": "/Tariqalthagafi/barber-booking-app/static/js/main.51e4145f.js",
-    "static/js/453.9aac2864.chunk.js": "/Tariqalthagafi/barber-booking-app/static/js/453.9aac2864.chunk.js",
-    "index.html": "/Tariqalthagafi/barber-booking-app/index.html",
-    "main.09bd7173.css.map": "/Tariqalthagafi/barber-booking-app/static/css/main.09bd7173.css.map",
-    "main.51e4145f.js.map": "/Tariqalthagafi/barber-booking-app/static/js/main.51e4145f.js.map",
-    "453.9aac2864.chunk.js.map": "/Tariqalthagafi/barber-booking-app/static/js/453.9aac2864.chunk.js.map"
+    "main.css": "/barber-booking-app/static/css/main.09bd7173.css",
+    "main.js": "/barber-booking-app/static/js/main.a1431aa4.js",
+    "static/js/453.9aac2864.chunk.js": "/barber-booking-app/static/js/453.9aac2864.chunk.js",
+    "index.html": "/barber-booking-app/index.html",
+    "main.09bd7173.css.map": "/barber-booking-app/static/css/main.09bd7173.css.map",
+    "main.a1431aa4.js.map": "/barber-booking-app/static/js/main.a1431aa4.js.map",
+    "453.9aac2864.chunk.js.map": "/barber-booking-app/static/js/453.9aac2864.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.09bd7173.css",
-    "static/js/main.51e4145f.js"
+    "static/js/main.a1431aa4.js"
   ]
 }
