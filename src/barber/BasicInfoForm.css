@@ -1,0 +1,78 @@
+.info-box {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 12px;
+  background: #fdfdfd;
+  margin-bottom: 24px;
+  transition: box-shadow 0.3s ease;
+}
+
+.info-box:has(input.editable) {
+  box-shadow: 0 0 6px rgba(0, 132, 255, 0.2);
+}
+
+.field-group {
+  margin-bottom: 16px;
+}
+
+.field-group label {
+  display: block;
+  margin-bottom: 4px;
+  color: #444;
+  font-weight: 500;
+}
+
+input.readonly {
+  width: 100%;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+input.editable {
+  width: 100%;
+  padding: 8px;
+  background-color: #fff;
+  border: 1px solid #007bff;
+  border-radius: 6px;
+  outline: none;
+}
+
+.pending-note {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.checkboxes label {
+  display: block;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.save-btn {
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background-color: #bd3c3c;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}

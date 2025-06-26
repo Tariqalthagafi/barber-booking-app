@@ -5,9 +5,10 @@ const SmartSearch = ({ onFiltersChange }) => {
   const [filters, setFilters] = useState({
     rating: 0,
     kids: false,
+    offersHomeService: false,
     userLocation: null,
     openNow: true,
-    nearby: true,
+    nearby: true
   });
 
   // تحديد الموقع تلقائيًا
@@ -19,8 +20,8 @@ const SmartSearch = ({ onFiltersChange }) => {
             ...prev,
             userLocation: {
               lat: pos.coords.latitude,
-              lng: pos.coords.longitude,
-            },
+              lng: pos.coords.longitude
+            }
           }));
         },
         () => {
@@ -30,7 +31,7 @@ const SmartSearch = ({ onFiltersChange }) => {
     }
   }, []);
 
-  // إشعار الأب بالتغييرات
+  // إشعار المكون الأب بالتغييرات
   useEffect(() => {
     onFiltersChange(filters);
   }, [filters, onFiltersChange]);
@@ -39,10 +40,14 @@ const SmartSearch = ({ onFiltersChange }) => {
     setFilters((prev) => ({ ...prev, kids: !prev.kids }));
   };
 
+  const toggleHome = () => {
+    setFilters((prev) => ({ ...prev, offersHomeService: !prev.offersHomeService }));
+  };
+
   const setRating = (value) => {
     setFilters((prev) => ({
       ...prev,
-      rating: prev.rating === value ? 0 : value,
+      rating: prev.rating === value ? 0 : value
     }));
   };
 
@@ -59,7 +64,14 @@ const SmartSearch = ({ onFiltersChange }) => {
         className={filters.kids ? 'filter-btn active' : 'filter-btn'}
         onClick={toggleKids}
       >
-        🧒 خدمة أطفال
+        👶 حلاقة أطفال
+      </button>
+
+      <button
+        className={filters.offersHomeService ? 'filter-btn active' : 'filter-btn'}
+        onClick={toggleHome}
+      >
+        🏠 خدمة منزلية
       </button>
 
       <button className="filter-btn disabled" disabled>
@@ -67,20 +79,17 @@ const SmartSearch = ({ onFiltersChange }) => {
       </button>
 
       <div className="rating-stars">
-  {[1, 2, 3, 4, 5].map((star) => (
-    <span
-  key={star}
-  onClick={() => setRating(star)}
-  className={`star ${filters.rating >= star ? 'active' : ''}`}
-  title={`تقييم ${star}`}
->
-  ⭐<span className="star-number">{star}</span>
-</span>
-
-  ))}
-</div>
-
-
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            onClick={() => setRating(star)}
+            className={`star ${filters.rating >= star ? 'active' : ''}`}
+            title={`تقييم ${star}`}
+          >
+            ⭐<span className="star-number">{star}</span>
+          </span>
+        ))}
+      </div>
     </div>
   );
 };

@@ -1,86 +1,133 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './BasicInfoForm.css'; // تأكد من إضافة التنسيقات المرافقة
 
-const EditableField = ({ label, field, value, onSave, pendingValue, type = 'text' }) => {
+const BasicInfoForm = ({ profile, onUpdateField }) => {
   const [editing, setEditing] = useState(false);
-  const [temp, setTemp] = useState(value);
+  const [localData, setLocalData] = useState({
+    name: profile.name,
+    salon: profile.salon,
+    phone: profile.phone,
+    offersKidsHaircut: profile.offersKidsHaircut,
+    offersHomeService: profile.offersHomeService
+  });
 
-  const handleSave = () => {
-    if (temp !== value) onSave(field, temp);
+  const [saving, setSaving] = useState(false);
+
+  // إعادة تحميل البيانات من البروفايل الخارجي عند تغيّره
+  useEffect(() => {
+    setLocalData({
+      name: profile.name,
+      salon: profile.salon,
+      phone: profile.phone,
+      offersKidsHaircut: profile.offersKidsHaircut,
+      offersHomeService: profile.offersHomeService
+    });
+    setEditing(false);
+  }, [profile]);
+
+  const handleFieldClick = () => {
+    if (!editing) setEditing(true);
+  };
+
+  const handleChange = (field, value) => {
+    setLocalData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    const promises = Object.entries(localData).map(([field, val]) =>
+      val !== profile[field] ? onUpdateField(field, val) : null
+    );
+    await Promise.all(promises);
+    setSaving(false);
     setEditing(false);
   };
 
   const handleCancel = () => {
-    setTemp(value);
+    setLocalData({
+      name: profile.name,
+      salon: profile.salon,
+      phone: profile.phone,
+      offersKidsHaircut: profile.offersKidsHaircut,
+      offersHomeService: profile.offersHomeService
+    });
     setEditing(false);
   };
 
   return (
-    <div className="field-group">
-      <label htmlFor={field}>{label}</label>
-      <div className="input-with-controls">
-        <input
-          id={field}
-          type={type}
-          value={editing ? temp : value}
-          readOnly={!editing}
-          onChange={(e) => setTemp(e.target.value)}
-          className="barber-input"
-        />
-        {pendingValue && <span className="pending-indicator">🟡 بانتظار المراجعة</span>}
-
-        {!editing ? (
-          <button onClick={() => setEditing(true)} className="edit-btn">✏️</button>
-        ) : (
-          <>
-            <button onClick={handleSave} className="save-btn">✅</button>
-            <button onClick={handleCancel} className="cancel-btn">❌</button>
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const BasicInfoForm = ({ profile, onUpdateField }) => {
-  return (
-    <div>
+    <div className="info-box">
       <h3 className="section-title">👤 المعلومات الأساسية</h3>
 
-      <EditableField
-        label="اسم الحلاق"
-        field="name"
-        value={profile.name}
-        onSave={onUpdateField}
-        pendingValue={profile.pendingChanges?.name}
-      />
+      <div className="field-group" onClick={handleFieldClick}>
+        <label>اسم الحلاق</label>
+        <input
+          type="text"
+          value={localData.name}
+          readOnly={!editing}
+          onChange={(e) => handleChange('name', e.target.value)}
+          className={editing ? 'editable' : 'readonly'}
+        />
+        {profile.pendingChanges?.name && (
+          <div className="pending-note">🕓 قيد المراجعة: {profile.pendingChanges.name}</div>
+        )}
+      </div>
 
-      <EditableField
-        label="اسم الصالون"
-        field="salon"
-        value={profile.salon}
-        onSave={onUpdateField}
-        pendingValue={profile.pendingChanges?.salon}
-      />
+      <div className="field-group" onClick={handleFieldClick}>
+        <label>اسم الصالون</label>
+        <input
+          type="text"
+          value={localData.salon}
+          readOnly={!editing}
+          onChange={(e) => handleChange('salon', e.target.value)}
+          className={editing ? 'editable' : 'readonly'}
+        />
+        {profile.pendingChanges?.salon && (
+          <div className="pending-note">🕓 قيد المراجعة: {profile.pendingChanges.salon}</div>
+        )}
+      </div>
 
-      <EditableField
-        label="رقم الجوال"
-        field="phone"
-        value={profile.phone}
-        type="tel"
-        onSave={onUpdateField}
-      />
+      <div className="field-group" onClick={handleFieldClick}>
+        <label>رقم الجوال</label>
+        <input
+          type="tel"
+          value={localData.phone}
+          readOnly={!editing}
+          onChange={(e) => handleChange('phone', e.target.value)}
+          className={editing ? 'editable' : 'readonly'}
+        />
+      </div>
 
-      <div className="field-group checkbox-group">
+      <div className="checkboxes" onClick={handleFieldClick}>
         <label>
           <input
             type="checkbox"
-            name="offersKidsHaircut"
-            checked={profile.offersKidsHaircut}
-            onChange={(e) => onUpdateField('offersKidsHaircut', e.target.checked)}
+            checked={localData.offersKidsHaircut}
+            disabled={!editing}
+            onChange={(e) => handleChange('offersKidsHaircut', e.target.checked)}
           />
           أقدّم حلاقة للأطفال 👶
         </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={localData.offersHomeService}
+            disabled={!editing}
+            onChange={(e) => handleChange('offersHomeService', e.target.checked)}
+          />
+          أقدّم خدمة منزلية 🏠
+        </label>
       </div>
+
+      {editing && (
+        <div className="form-actions">
+          <button onClick={handleSave} disabled={saving} className="save-btn">
+            {saving ? '💾 جاري الحفظ...' : '✅ حفظ'}
+          </button>
+          <button onClick={handleCancel} disabled={saving} className="cancel-btn">
+            ❌ إلغاء
+          </button>
+        </div>
+      )}
     </div>
   );
 };

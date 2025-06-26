@@ -1,25 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const LocationForm = ({ profile, onAutoLocate, onUpdateField }) => {
-  const [editing, setEditing] = useState(false);
-  const [tempLocation, setTempLocation] = useState({ ...profile.location });
-
-  const handleSave = () => {
-    onUpdateField('location', tempLocation);
-    setEditing(false);
-  };
-
-  const handleCancel = () => {
-    setTempLocation({ ...profile.location });
-    setEditing(false);
+const LocationForm = ({ profile, onAutoLocate }) => {
+  const handleRequestLocation = () => {
+    const confirmed = window.confirm('📍 هل ترغب فعلاً في تحديث موقعك الجغرافي؟ سيتم استبدال الإحداثيات الحالية.');
+    if (confirmed) {
+      onAutoLocate();
+    }
   };
 
   return (
-    <div>
+    <div className="services-box">
       <h3 className="section-title">🗺️ الموقع الجغرافي</h3>
 
       <button
-        onClick={onAutoLocate}
+        onClick={handleRequestLocation}
         className="secondary-button"
         style={{ marginBottom: '10px' }}
       >
@@ -29,37 +23,18 @@ const LocationForm = ({ profile, onAutoLocate, onUpdateField }) => {
       <div className="barber-row">
         <input
           type="text"
-          name="lat"
-          placeholder="خط العرض (Latitude)"
-          value={editing ? tempLocation.lat : profile.location.lat}
-          readOnly={!editing}
-          onChange={(e) =>
-            setTempLocation((prev) => ({ ...prev, lat: e.target.value }))
-          }
+          value={profile.location.lat}
+          readOnly
           className="barber-input half"
+          placeholder="خط العرض (Latitude)"
         />
         <input
           type="text"
-          name="lng"
-          placeholder="خط الطول (Longitude)"
-          value={editing ? tempLocation.lng : profile.location.lng}
-          readOnly={!editing}
-          onChange={(e) =>
-            setTempLocation((prev) => ({ ...prev, lng: e.target.value }))
-          }
+          value={profile.location.lng}
+          readOnly
           className="barber-input half"
+          placeholder="خط الطول (Longitude)"
         />
-      </div>
-
-      <div className="input-with-controls" style={{ marginTop: '8px' }}>
-        {!editing ? (
-          <button onClick={() => setEditing(true)} className="edit-btn">✏️ تعديل</button>
-        ) : (
-          <>
-            <button onClick={handleSave} className="save-btn">✅ حفظ</button>
-            <button onClick={handleCancel} className="cancel-btn">❌ إلغاء</button>
-          </>
-        )}
       </div>
     </div>
   );

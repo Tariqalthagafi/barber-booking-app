@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './WorkingHours.css';
 
 const daysOfWeek = [
   'الأحد',
@@ -11,118 +12,130 @@ const daysOfWeek = [
 ];
 
 const WorkingHours = ({ profile, onUpdateField }) => {
-  const workingHours = profile.workingHours || {};
-  const [editingPeriod, setEditingPeriod] = useState(null); // { day, index }
-  const [tempTimes, setTempTimes] = useState({ from: '', to: '' });
+  const original = profile.workingHours || {};
+  const [localHours, setLocalHours] = useState({});
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const updateDay = (day, newPeriods) => {
-    const updated = { ...workingHours, [day]: newPeriods };
-    onUpdateField('workingHours', updated);
+  useEffect(() => {
+    setLocalHours({ ...original });
+    setEditing(false);
+  }, [profile]);
+
+  const handleToggleDay = (day, checked) => {
+    setEditing(true);
+    setLocalHours(prev => {
+      const updated = { ...prev };
+      if (checked) {
+        const prevDayIndex = daysOfWeek.indexOf(day) - 1;
+        const prevDay = daysOfWeek[prevDayIndex >= 0 ? prevDayIndex : 0];
+        const prevPeriods = prev[prevDay] || [];
+        updated[day] = prevPeriods.length
+          ? [...prevPeriods]
+          : [{ from: '', to: '' }];
+      } else {
+        delete updated[day];
+      }
+      return updated;
+    });
   };
 
-  const toggleDay = (day) => {
-    const current = workingHours[day] || [];
-    updateDay(day, current.length ? [] : [{ from: '', to: '' }]);
-  };
-
-  const handleEdit = (day, idx, current) => {
-    setEditingPeriod({ day, index: idx });
-    setTempTimes({ from: current.from, to: current.to });
-  };
-
-  const handleSave = () => {
-    const { day, index } = editingPeriod;
-    const updated = [...(workingHours[day] || [])];
-    updated[index] = { ...tempTimes };
-    updateDay(day, updated);
-    setEditingPeriod(null);
-    setTempTimes({ from: '', to: '' });
-  };
-
-  const handleCancel = () => {
-    setEditingPeriod(null);
-    setTempTimes({ from: '', to: '' });
+  const handleTimeChange = (day, idx, field, value) => {
+    setEditing(true);
+    setLocalHours(prev => {
+      const updated = { ...prev };
+      const periods = [...(updated[day] || [])];
+      periods[idx] = { ...periods[idx], [field]: value };
+      updated[day] = periods;
+      return updated;
+    });
   };
 
   const addPeriod = (day) => {
-    const updated = [...(workingHours[day] || []), { from: '', to: '' }];
-    updateDay(day, updated);
+    if ((localHours[day] || []).length >= 2) return;
+    setEditing(true);
+    setLocalHours(prev => {
+      const updated = { ...prev };
+      updated[day] = [...(updated[day] || []), { from: '', to: '' }];
+      return updated;
+    });
   };
 
-  const removePeriod = (day, index) => {
-    const updated = [...(workingHours[day] || [])];
-    updated.splice(index, 1);
-    updateDay(day, updated);
+  const handleSave = async () => {
+    setSaving(true);
+    await onUpdateField('workingHours', localHours);
+    setSaving(false);
+    setEditing(false);
   };
-  
+
+  const handleCancel = () => {
+    setLocalHours({ ...original });
+    setEditing(false);
+  };
 
   return (
-    <div>
+    <div className="hours-box">
       <h3 className="section-title">🗓️ جدول ساعات العمل</h3>
 
-      {daysOfWeek.map((day) => (
-        <div key={day} className="day-block">
-          <div className="day-header">
-            <label>{day}</label>
-            <button
-              type="button"
-              onClick={() => toggleDay(day)}
-              className={`toggle-day-btn ${workingHours[day]?.length ? 'active' : ''}`}
-            >
-              {workingHours[day]?.length ? 'إغلاق اليوم' : 'تفعيل'}
-            </button>
-          </div>
+      <div className="days-grid">
+        {daysOfWeek.map(day => {
+          const periods = localHours[day] || [];
+          const enabled = day in localHours;
 
-          {workingHours[day]?.length > 0 && (
-            <div className="periods-container">
-              {workingHours[day].map((period, idx) => {
-                const isEditing =
-                  editingPeriod?.day === day && editingPeriod?.index === idx;
+          return (
+            <div className="day-row" key={day}>
+              <label className="day-label">
+                <input
+                  type="checkbox"
+                  checked={enabled}
+                  onChange={(e) => handleToggleDay(day, e.target.checked)}
+                />
+                {day}
+              </label>
 
-                return (
-                  <div key={idx} className="period-row">
-                    {isEditing ? (
-                      <>
-                        <input
-                          type="time"
-                          value={tempTimes.from}
-                          onChange={(e) =>
-                            setTempTimes((prev) => ({ ...prev, from: e.target.value }))
-                          }
-                        />
-                        <span>إلى</span>
-                        <input
-                          type="time"
-                          value={tempTimes.to}
-                          onChange={(e) =>
-                            setTempTimes((prev) => ({ ...prev, to: e.target.value }))
-                          }
-                        />
-                        <button onClick={handleSave}>✅</button>
-                        <button onClick={handleCancel}>❌</button>
-                      </>
-                    ) : (
-                      <>
-                        <span>{period.from || '--:--'}</span>
-                        <span>إلى</span>
-                        <span>{period.to || '--:--'}</span>
-                        <button onClick={() => handleEdit(day, idx, period)}>✏️</button>
-                        <button onClick={() => removePeriod(day, idx)}>🗑️</button>
-                      </>
-                    )}
-                  </div>
-                );
-              })}
+              <div className="periods-wrapper">
+                {enabled &&
+                  periods.map((p, idx) => (
+                    <div key={idx} className="period-fields">
+                      <input
+                        type="time"
+                        value={p.from}
+                        onChange={(e) => handleTimeChange(day, idx, 'from', e.target.value)}
+                        className={editing ? 'editable' : 'readonly'}
+                        readOnly={!editing}
+                      />
+                      <span>→</span>
+                      <input
+                        type="time"
+                        value={p.to}
+                        onChange={(e) => handleTimeChange(day, idx, 'to', e.target.value)}
+                        className={editing ? 'editable' : 'readonly'}
+                        readOnly={!editing}
+                      />
+                    </div>
+                  ))}
 
-              {workingHours[day].length < 2 && (
-                <button type="button" className="add-period-btn" onClick={() => addPeriod(day)}>
-                  ➕ إضافة فترة
-                </button>
-              )}
+                {enabled && periods.length < 2 && (
+                  <button className="add-period-btn" onClick={() => addPeriod(day)}>
+                    ➕ إضافة فترة
+                  </button>
+                )}
+              </div>
             </div>
-          )}
+          );
+        })}
+      </div>
+
+      {editing && (
+        <div className="form-actions">
+          <button onClick={handleSave} disabled={saving} className="save-btn">
+            {saving ? '💾 جاري الحفظ...' : '✅ حفظ'}
+          </button>
+          <button onClick={handleCancel} disabled={saving} className="cancel-btn">
+            ❌ إلغاء
+          </button>
         </div>
-      ))}
+      )}
     </div>
   );
 };

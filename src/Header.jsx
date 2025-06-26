@@ -29,7 +29,8 @@ const Header = () => {
   return (
     <header className="header-bar">
       <div className="header-left" onClick={() => navigate('/')} title="الرئيسية">
-        <img src="/logo.png" alt="لوقو" className="header-logo" />
+        <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="لوقو" className="header-logo" />
+
         <span className="header-title">مشط ومقص</span>
       </div>
 

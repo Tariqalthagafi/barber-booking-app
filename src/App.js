@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { fetchAllBarbers } from './firebaseService';
 import BarberCard from './BarberCard';
@@ -88,9 +88,23 @@ const App = () => {
 
                   <div className="barbers-list">
                     {displayedBarbers.length > 0 ? (
-                      displayedBarbers.map((barber, index) => (
-                        <BarberCard key={index} {...barber} />
-                      ))
+                      displayedBarbers
+                        .filter(b => b.baseData && b.baseData.name)
+                        .map((barber, index) => (
+                          <BarberCard
+                            key={index}
+                            name={barber.baseData.name}
+                            salon={barber.baseData.salon}
+                            image={barber.baseData.image}
+                            rating={barber.metrics?.rating || 0}
+                            services={barber.baseData.services}
+                            phone={barber.baseData.phone}
+                            location={barber.baseData.location}
+                            workingHours={barber.baseData.workingHours}
+                            offersKidsHaircut={barber.baseData.offersKidsHaircut}
+                            offersHomeService={barber.baseData.offersHomeService}
+                          />
+                        ))
                     ) : (
                       <p style={{ textAlign: 'center' }}>لا توجد نتائج تطابق الفلاتر المختارة.</p>
                     )}
@@ -115,6 +129,7 @@ const App = () => {
             </AdminRoute>
           }
         />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
@@ -122,7 +137,9 @@ const App = () => {
 
 const applyFilters = (barbers, filters) => {
   const now = new Date();
-  const currentTime = now.getHours() + now.getMinutes() / 60;
+  const currentTime = now.toTimeString().slice(0, 5);
+  const weekdays = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  const today = weekdays[now.getDay()];
 
   const getDistance = (loc1, loc2) => {
     if (!loc1 || !loc2) return Infinity;
@@ -138,19 +155,18 @@ const applyFilters = (barbers, filters) => {
   };
 
   return barbers
+    .filter(b => b.baseData && b.metrics)
     .filter(b => {
-      if (!b.openingTime || !b.closingTime) return false;
-      const [h1, m1] = b.openingTime.split(':').map(Number);
-      const [h2, m2] = b.closingTime.split(':').map(Number);
-      const open = h1 + m1 / 60;
-      const close = h2 + m2 / 60;
-      return filters.openNow ? currentTime >= open && currentTime < close : true;
+      const wh = b.baseData?.workingHours?.[today] || [];
+      const isOpen = wh.some(period => currentTime >= period.from && currentTime <= period.to);
+      return filters.openNow ? isOpen : true;
     })
-    .filter(b => b.rating >= (filters.rating || 0))
-    .filter(b => !filters.kids || b.offersKidsHaircut)
+    .filter(b => (b.metrics?.rating || 0) >= (filters.rating || 0))
+    .filter(b => !filters.kids || b.baseData?.offersKidsHaircut)
+    .filter(b => !filters.offersHomeService || b.baseData?.offersHomeService)
     .map(b => {
       const dist = filters.userLocation
-        ? getDistance(filters.userLocation, b.location)
+        ? getDistance(filters.userLocation, b.baseData?.location)
         : Infinity;
       return { ...b, distance: dist };
     })

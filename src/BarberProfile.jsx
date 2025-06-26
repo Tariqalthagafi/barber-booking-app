@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './profile-theme.css';
 import { useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
-
 import {
   signOut,
   onAuthStateChanged
@@ -34,8 +33,6 @@ const isProfileComplete = (profile) => {
     'phone',
     'image',
     'location',
-    'openingTime',
-    'closingTime',
     'workingHours'
   ];
 
@@ -65,11 +62,10 @@ const BarberProfile = () => {
     phone: '',
     image: '',
     location: { lat: '', lng: '' },
-    openingTime: '',
-    closingTime: '',
     rating: 4.5,
     services: [],
     offersKidsHaircut: false,
+    offersHomeService: false,
     workingHours: {},
     membershipType: 'اشترك الآن',
     approved: false,
@@ -104,7 +100,9 @@ const BarberProfile = () => {
           pendingChanges: data.pendingChanges || {},
           rating: data.rating || 4.5,
           membershipType: data.membershipType || 'اشترك الآن',
-          approved: data.approved ?? false
+          approved: data.approved ?? false,
+          offersKidsHaircut: data.offersKidsHaircut || false,
+          offersHomeService: data.offersHomeService || false
         }));
         setImagePreview(data.image || '');
       }
@@ -131,7 +129,7 @@ const BarberProfile = () => {
         await updateDoc(docRef, {
           [fieldName]: value
         });
-        alert(`✅ تم تحديث "${fieldName}" مباشرة.`);
+        alert(`✅ تم تحديث "${fieldName}" بنجاح.`);
       }
 
       setProfile(prev => ({
@@ -178,23 +176,13 @@ const BarberProfile = () => {
     }
   };
 
-  const addService = () => {
-    if (profile.services.length >= 10) return;
-    const updated = [...profile.services, { name: '', price: '' }];
-    handleFieldUpdate('services', updated);
+  // استبدال الدوال الجزئية بأخرى متوافقة مع حفظ القائمة دفعة واحدة
+  const updateService = (newServices) => {
+    handleFieldUpdate('services', newServices);
   };
 
-  const updateService = (index, field, value) => {
-    const updated = [...profile.services];
-    updated[index][field] = value;
-    handleFieldUpdate('services', updated);
-  };
-
-  const removeService = (index) => {
-    const updated = [...profile.services];
-    updated.splice(index, 1);
-    handleFieldUpdate('services', updated);
-  };
+  const addService = () => {}; // لم يعد مستخدماً حالياً
+  const removeService = () => {}; // لم يعد مستخدماً حالياً
 
   const handleActivationRequest = async (updatedProfile) => {
     if (!authUser) {
@@ -253,18 +241,19 @@ const BarberProfile = () => {
           <WorkingHours profile={profile} onUpdateField={handleFieldUpdate} />
           <ServicesList
             services={profile.services}
-            onAdd={addService}
             onUpdate={updateService}
+            onAdd={addService}
             onRemove={removeService}
           />
-          <hr />
-          <StatusPanel
-            membershipType={profile.membershipType}
-            approved={profile.approved}
-            profile={profile}
-            setProfile={setProfile}
-            onRequestActivateExternal={handleActivationRequest}
-          />
+          
+        <StatusPanel
+  membershipType={profile.membershipType}
+  approved={profile.approved}
+  profile={profile}
+  setProfile={setProfile}
+  onRequestActivateExternal={handleActivationRequest}
+/>
+<hr />
         </>
       )}
     </div>
