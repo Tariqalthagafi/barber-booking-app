@@ -23,7 +23,6 @@ import StatusPanel from './barber/StatusPanel';
 import RatingSummary from './barber/RatingSummary';
 
 const db = getFirestore();
-
 const sensitiveFields = ['name', 'salon', 'image'];
 
 const isProfileComplete = (profile) => {
@@ -176,13 +175,12 @@ const BarberProfile = () => {
     }
   };
 
-  // استبدال الدوال الجزئية بأخرى متوافقة مع حفظ القائمة دفعة واحدة
   const updateService = (newServices) => {
     handleFieldUpdate('services', newServices);
   };
 
-  const addService = () => {}; // لم يعد مستخدماً حالياً
-  const removeService = () => {}; // لم يعد مستخدماً حالياً
+  const addService = () => {};
+  const removeService = () => {};
 
   const handleActivationRequest = async (updatedProfile) => {
     if (!authUser) {
@@ -214,8 +212,6 @@ const BarberProfile = () => {
 
   return (
     <div className="barber-container">
-      <RatingSummary rating={profile.rating} />
-
       {!isLoggedIn ? (
         <div style={{ marginTop: '10px' }}>
           <p style={{ color: '#888', fontStyle: 'italic' }}>
@@ -231,11 +227,26 @@ const BarberProfile = () => {
         </div>
       ) : (
         <>
-          <p className="approval-status">
-            {profile.approved ? '✅ تم اعتمادك من الإدارة' : '⏳ بانتظار الموافقة'}
-          </p>
-          <hr />
-          <ImageUploader imagePreview={imagePreview} onUpload={handleImageUpload} />
+         <div className="barber-summary-box">
+  <div className="summary-flex">
+    <ImageUploader imagePreview={imagePreview} onUpload={handleImageUpload} />
+    <div className="summary-details">
+      <p className="approval-status">
+        {profile.approved ? '✅ تم اعتمادك من الإدارة' : '⏳ بانتظار الموافقة'}
+      </p>
+      <RatingSummary rating={profile.rating} />
+      <StatusPanel
+        membershipType={profile.membershipType}
+        approved={profile.approved}
+        profile={profile}
+        setProfile={setProfile}
+        onRequestActivateExternal={handleActivationRequest}
+      />
+    </div>
+  </div>
+</div>
+
+
           <BasicInfoForm profile={profile} onUpdateField={handleFieldUpdate} />
           <LocationForm profile={profile} onAutoLocate={handleAutoLocate} />
           <WorkingHours profile={profile} onUpdateField={handleFieldUpdate} />
@@ -245,15 +256,8 @@ const BarberProfile = () => {
             onAdd={addService}
             onRemove={removeService}
           />
-          
-        <StatusPanel
-  membershipType={profile.membershipType}
-  approved={profile.approved}
-  profile={profile}
-  setProfile={setProfile}
-  onRequestActivateExternal={handleActivationRequest}
-/>
-<hr />
+       
+          <hr />
         </>
       )}
     </div>

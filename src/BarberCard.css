@@ -1,113 +1,168 @@
-/* src/components/BarberCard.css */
 .barber-card {
+  background: #ffffff;
+  border-radius: 12px;
   border: 1px solid #ddd;
-  border-radius: 8px;
   padding: 16px;
-  text-align: center;
-  width: 200px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 360px;
+  margin: auto;
+}
+
+/* ✅ رأس البطاقة */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.availability {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #2e7d32;
+  background-color: #e6f6ec;
+}
+
+.unavailable {
+  color: #c62828;
+  background-color: #fde7e9;
+}
+
+.service-tags {
+  display: flex;
+  gap: 6px;
+}
+
+.tag {
+  background-color: #f3f3f3;
+  color: #444;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-weight: 500;
+}
+
+/* 🖼️ صورة + تقييم */
+.barber-image-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin: auto;
 }
 
 .barber-image {
   width: 100%;
-  border-radius: 8px;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #eee;
 }
 
-.barber-name {
-  margin: 12px 0 4px;
+.rating-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: #f9f9f9;
+  color: #000;
+  font-size: 13px;
+  padding: 4px 6px;
+  border-radius: 10px;
   font-weight: bold;
+  border: 2px solid gold;
 }
 
-.barber-rating {
-  color: #ffaa00;
+/* ✂️ الاسم والمعلومات */
+.barber-name {
+  text-align: center;
+  font-size: 18px;
+  margin: 6px 0 0;
+  color: #333;
 }
+
+.barber-salon {
+  text-align: center;
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+}
+
+/* ⏰ روابط */
 .barber-actions {
   display: flex;
-  justify-content: space-around;
-  margin-top: 12px;
-  gap: 12px;
-}
-
-.barber-actions a,
-.barber-actions span {
-  width: 40px;
-  height: 40px;
-  background-color: #eee;
-  color: #333;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  gap: 12px;
+  font-size: 18px;
+  margin-top: 6px;
 }
 
-.barber-actions a:hover,
-.barber-actions span:hover {
-  background-color: #333;
-  color: #fff;
-  transform: scale(1.1);
-}
-
-.barber-image {
-  width: 100%;
-  max-width: 180px;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-.toggle-button {
-  margin-top: 10px;
-  padding: 6px 12px;
-  font-size: 0.9rem;
-  border: none;
-  background-color: #333;
-  color: white;
-  border-radius: 4px;
+.clock-icon {
   cursor: pointer;
-  transition: background 0.2s;
+  transition: color 0.2s ease;
+}
+
+.clock-icon:hover {
+  color: #555;
+}
+
+/* 🧾 ساعات العمل */
+.working-hours-expanded {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #333;
+  text-align: center;
+}
+
+/* زر عرض الخدمات */
+.toggle-button {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  color: #333;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  margin: auto;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .toggle-button:hover {
-  background-color: #555;
+  background-color: #eee;
 }
 
+/* قائمة الخدمات */
 .services-list {
   list-style: none;
-  padding: 12px;
-  margin-top: 8px;
-  background-color: #fafafa;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: 0;
+  margin-top: 10px;
+  border-top: 1px dashed #ccc;
+  padding-top: 10px;
 }
 
 .services-list li {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #e0e0e0;
-}
-.barber-badges {
-  margin: 4px 0;
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  justify-content: center;
+  font-size: 14px;
+  color: #444;
+  padding: 6px 0;
+  border-bottom: 1px solid #f1f1f1;
 }
 
-.badge {
-  background-color: #f0f0f0;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  color: #333;
-  border: 1px solid #ccc;
-}
-.barber-salon {
-  margin-top: -6px;
-  font-size: 0.9rem;
-  color: #777;
-  font-style: italic;
+/* 📱 التصميم المتجاوب */
+@media (max-width: 500px) {
+  .barber-card {
+    padding: 14px;
+    max-width: 100%;
+  }
+  .barber-image-wrapper {
+    width: 75px;
+    height: 75px;
+  }
 }

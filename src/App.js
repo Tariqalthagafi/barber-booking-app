@@ -22,6 +22,7 @@ const App = () => {
   const [displayedBarbers, setDisplayedBarbers] = useState([]);
   const [searchFilters, setSearchFilters] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [expandedBarberId, setExpandedBarberId] = useState(null);
 
   useEffect(() => {
     const fetchInitialBarbers = async () => {
@@ -51,6 +52,10 @@ const App = () => {
     setDisplayedBarbers(prev => [...prev, newBarber]);
   };
 
+  const handleToggleCard = (barberId) => {
+    setExpandedBarberId(prevId => (prevId === barberId ? null : barberId));
+  };
+
   return (
     <>
       <Header />
@@ -60,19 +65,11 @@ const App = () => {
           path="/"
           element={
             <div className="home-container">
-              <h2 style={{ marginBottom: '10px' }}>💈 استكشف أفضل الحلاقين</h2>
+             
 
               <SmartSearch onFiltersChange={setSearchFilters} />
 
-              {searchFilters && (
-                <button
-                  onClick={() => setSearchFilters(null)}
-                  style={{ margin: '10px auto', display: 'block' }}
-                  className="filter-btn"
-                >
-                  🔄 إعادة تعيين الفلاتر
-                </button>
-              )}
+              
 
               {loading ? (
                 <div style={{ textAlign: 'center' }}>
@@ -92,7 +89,7 @@ const App = () => {
                         .filter(b => b.baseData && b.baseData.name)
                         .map((barber, index) => (
                           <BarberCard
-                            key={index}
+                            key={barber.id || index}
                             name={barber.baseData.name}
                             salon={barber.baseData.salon}
                             image={barber.baseData.image}
@@ -103,6 +100,8 @@ const App = () => {
                             workingHours={barber.baseData.workingHours}
                             offersKidsHaircut={barber.baseData.offersKidsHaircut}
                             offersHomeService={barber.baseData.offersHomeService}
+                            isExpanded={expandedBarberId === (barber.id || index)}
+                            onToggle={() => handleToggleCard(barber.id || index)}
                           />
                         ))
                     ) : (
