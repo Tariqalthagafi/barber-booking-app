@@ -10,10 +10,12 @@ const ImageUploader = ({ imagePreview, onUpload }) => {
     onUpload(e);
   };
 
+  const hasValidImage = imagePreview && imagePreview.trim() !== '';
+
   return (
     <div className="image-container-side">
       <div className="image-wrapper">
-        {imagePreview ? (
+        {hasValidImage ? (
           <img src={imagePreview} alt="معاينة" className="profile-image" />
         ) : (
           <div className="placeholder-image">📸</div>
@@ -22,7 +24,7 @@ const ImageUploader = ({ imagePreview, onUpload }) => {
 
       <div className="side-buttons">
         <label className="icon-button blue-button">
-          {imagePreview ? '✏️' : '📤'}
+          {hasValidImage ? '✏️ ' : '📤 '}
           <input
             type="file"
             accept="image/*"
@@ -31,9 +33,9 @@ const ImageUploader = ({ imagePreview, onUpload }) => {
           />
         </label>
 
-        {imagePreview && (
+        {hasValidImage && (
           <button className="icon-button red-button" onClick={handleDelete}>
-            🗑️
+            🗑️ 
           </button>
         )}
       </div>

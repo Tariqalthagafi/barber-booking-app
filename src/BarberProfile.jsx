@@ -10,8 +10,7 @@ import {
   setDoc,
   getDoc,
   doc,
-  getFirestore,
-  updateDoc
+  getFirestore
 } from 'firebase/firestore';
 
 import BasicInfoForm from './barber/BasicInfoForm';
@@ -120,14 +119,19 @@ const BarberProfile = () => {
 
     try {
       if (sensitiveFields.includes(fieldName)) {
-        await updateDoc(docRef, {
-          [`pendingChanges.${fieldName}`]: value
-        });
+        await setDoc(docRef, {
+          pendingChanges: {
+            ...(profile.pendingChanges || {}),
+            [fieldName]: value
+          }
+        }, { merge: true });
+
         alert(`📤 تم إرسال تعديل "${fieldName}" لمراجعة الإدارة.`);
       } else {
-        await updateDoc(docRef, {
+        await setDoc(docRef, {
           [fieldName]: value
-        });
+        }, { merge: true });
+
         alert(`✅ تم تحديث "${fieldName}" بنجاح.`);
       }
 
@@ -194,10 +198,10 @@ const BarberProfile = () => {
     }
 
     try {
-      await updateDoc(doc(db, 'barbers', authUser.uid), {
+      await setDoc(doc(db, 'barbers', authUser.uid), {
         ...updatedProfile,
         membershipType: 'طلب ترقية الحساب'
-      });
+      }, { merge: true });
 
       setProfile((prev) => ({
         ...prev,
@@ -227,25 +231,24 @@ const BarberProfile = () => {
         </div>
       ) : (
         <>
-         <div className="barber-summary-box">
-  <div className="summary-flex">
-    <ImageUploader imagePreview={imagePreview} onUpload={handleImageUpload} />
-    <div className="summary-details">
-      <p className="approval-status">
-        {profile.approved ? '✅ تم اعتمادك من الإدارة' : '⏳ بانتظار الموافقة'}
-      </p>
-      <RatingSummary rating={profile.rating} />
-      <StatusPanel
-        membershipType={profile.membershipType}
-        approved={profile.approved}
-        profile={profile}
-        setProfile={setProfile}
-        onRequestActivateExternal={handleActivationRequest}
-      />
-    </div>
-  </div>
-</div>
-
+          <div className="barber-summary-box">
+            <div className="summary-flex">
+              <ImageUploader imagePreview={imagePreview} onUpload={handleImageUpload} />
+              <div className="summary-details">
+                <p className="approval-status">
+                  {profile.approved ? '✅ تم اعتمادك من الإدارة' : '⏳ بانتظار الموافقة'}
+                </p>
+                <RatingSummary rating={profile.rating} />
+                <StatusPanel
+                  membershipType={profile.membershipType}
+                  approved={profile.approved}
+                  profile={profile}
+                  setProfile={setProfile}
+                  onRequestActivateExternal={handleActivationRequest}
+                />
+              </div>
+            </div>
+          </div>
 
           <BasicInfoForm profile={profile} onUpdateField={handleFieldUpdate} />
           <LocationForm profile={profile} onAutoLocate={handleAutoLocate} />
@@ -256,7 +259,7 @@ const BarberProfile = () => {
             onAdd={addService}
             onRemove={removeService}
           />
-       
+
           <hr />
         </>
       )}
