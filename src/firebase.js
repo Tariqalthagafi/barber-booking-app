@@ -13,6 +13,9 @@ const firebaseConfig = {
   messagingSenderId: '318460157679',
   appId: '1:318460157679:web:132771fd94750860fb451a',
 };
+console.log("🔥 API Key:", process.env.REACT_APP_FIREBASE_KEY);
+console.log("🔍 Firebase Key:", process.env.REACT_APP_FIREBASE_KEY);
+console.log("🔍 reCAPTCHA Key:", process.env.REACT_APP_RECAPTCHA_KEY);
 
 // 🚀 تهيئة Firebase
 const app = initializeApp(firebaseConfig);

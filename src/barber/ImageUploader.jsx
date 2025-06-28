@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './ImageUploader.css';
 
 const ImageUploader = ({ imagePreview, onUpload }) => {
-  const [editing, setEditing] = useState(false);
-
   const handleDelete = () => {
     onUpload({ target: { files: [] } });
-    setEditing(false);
   };
 
   const handleFileSelect = (e) => {
     onUpload(e);
-    setEditing(false);
   };
 
   return (
@@ -25,34 +21,17 @@ const ImageUploader = ({ imagePreview, onUpload }) => {
       </div>
 
       <div className="side-buttons">
-        {!editing ? (
-          <button
-            className="icon-button edit-button"
-            onClick={() => setEditing(true)}
-          >
-            ✏️
-          </button>
-        ) : (
-          <>
-            <label className="icon-button green-button">
-              📂
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                hidden
-              />
-            </label>
-            <button
-              className="icon-button cancel-button"
-              onClick={() => setEditing(false)}
-            >
-              ❌
-            </button>
-          </>
-        )}
+        <label className="icon-button blue-button">
+          {imagePreview ? '✏️' : '📤'}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            hidden
+          />
+        </label>
 
-        {imagePreview && !editing && (
+        {imagePreview && (
           <button className="icon-button red-button" onClick={handleDelete}>
             🗑️
           </button>

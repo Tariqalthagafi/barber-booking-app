@@ -13,6 +13,9 @@
 
 # misc
 .env
+REACT_APP_FIREBASE_KEY=YOUR_FIREBASE_API_KEY
+REACT_APP_RECAPTCHA_KEY=YOUR_RECAPTCHA_SITE_KEY
+
 .DS_Store
 .env.local
 .env.development.local
