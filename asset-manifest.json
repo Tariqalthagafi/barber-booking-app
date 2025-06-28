@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/barber-booking-app/static/css/main.a1f41dd4.css",
-    "main.js": "/barber-booking-app/static/js/main.c1f62dcf.js",
+    "main.js": "/barber-booking-app/static/js/main.9c3e8413.js",
     "static/js/453.9aac2864.chunk.js": "/barber-booking-app/static/js/453.9aac2864.chunk.js",
     "index.html": "/barber-booking-app/index.html",
     "main.a1f41dd4.css.map": "/barber-booking-app/static/css/main.a1f41dd4.css.map",
-    "main.c1f62dcf.js.map": "/barber-booking-app/static/js/main.c1f62dcf.js.map",
+    "main.9c3e8413.js.map": "/barber-booking-app/static/js/main.9c3e8413.js.map",
     "453.9aac2864.chunk.js.map": "/barber-booking-app/static/js/453.9aac2864.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a1f41dd4.css",
-    "static/js/main.c1f62dcf.js"
+    "static/js/main.9c3e8413.js"
   ]
 }
